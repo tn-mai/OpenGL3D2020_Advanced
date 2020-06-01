@@ -1,14 +1,14 @@
 [OpenGL 3D Advanced 2020 第01回]
 
-# スケルタルメッシュって何でできてるの？
+# スケルタルメッシュって<br>何でできてるの？
 
-骸骨と関節、そして行列、そういうものでできてるよ
+関節行列、そして逆バインドポーズ行列<br>そういうものでできてるよ
 
 ## 習得目標
 
 * 関節を行列によって表す方法
-* 行列の合成
 * 行列によるスケルトンの作成
+* glTFからスケルタルメッシュデータを読み込む
 
 ## 1. 関節を行列で表す
 
@@ -63,6 +63,8 @@
 >```
 
 さらに「回転・移動後の車輪の座標」を置き換えると次のようになります。
+
+<br><br><br>
 
 >```txt
 >車輪のローカル行列 = 車輪を車体の所定位置へ移動させる行列 * 車輪を回転させる行列
@@ -295,21 +297,25 @@ TODO: ここに「車体ローカル空間にともなって車輪ローカル�
 これらのうち、ボーンIDとボーンウェイトは頂点アトリビュートとして読み込みます。頂点アトリビュートの読み込みは、`Buffer::LoadSkeletalMesh`関数の980行目から始まっていて、次のようになっています。glTFでは、`WEIGHTS_0`(ウェイツ・ゼロ)がボーンウェイト、`JOINTS_0`(ジョインツ・ゼロ)がボーンIDを表します。
 
 ```c++
-      // 頂点属性.
-      const json11::Json& attributes = primitive["attributes"];
-      const int accessorId_position = attributes["POSITION"].int_value();
-      const int accessorId_normal = attributes["NORMAL"].is_null() ? -1 : attributes["NORMAL"].int_value();
-      const int accessorId_texcoord = attributes["TEXCOORD_0"].is_null() ? -1 : attributes["TEXCOORD_0"].int_value();
-      const int accessorId_weights = attributes["WEIGHTS_0"].is_null() ? -1 : attributes["WEIGHTS_0"].int_value();
-      const int accessorId_joints = attributes["JOINTS_0"].is_null() ? -1 : attributes["JOINTS_0"].int_value();
+// 頂点属性.
+const json11::Json& attributes = primitive["attributes"];
+const int accessorId_position = attributes["POSITION"].int_value();
+const int accessorId_normal =
+  attributes["NORMAL"].is_null() ? -1 : attributes["NORMAL"].int_value();
+const int accessorId_texcoord =
+  attributes["TEXCOORD_0"].is_null() ? -1 : attributes["TEXCOORD_0"].int_value();
+const int accessorId_weights =
+  attributes["WEIGHTS_0"].is_null() ? -1 : attributes["WEIGHTS_0"].int_value();
+const int accessorId_joints =
+  attributes["JOINTS_0"].is_null() ? -1 : attributes["JOINTS_0"].int_value();
 
-      mesh.primitives[primId].vao = std::make_shared<VertexArrayObject>();
-      mesh.primitives[primId].vao->Create(vbo.Id(), ibo.Id());
-      SetAttribute(&mesh.primitives[primId], 0, accessors[accessorId_position], bufferViews, binFiles);
-      SetAttribute(&mesh.primitives[primId], 1, accessors[accessorId_texcoord], bufferViews, binFiles);
-      SetAttribute(&mesh.primitives[primId], 2, accessors[accessorId_normal], bufferViews, binFiles);
-      SetAttribute(&mesh.primitives[primId], 3, accessors[accessorId_weights], bufferViews, binFiles);
-      SetAttribute(&mesh.primitives[primId], 4, accessors[accessorId_joints], bufferViews, binFiles);
+mesh.primitives[primId].vao = std::make_shared<VertexArrayObject>();
+mesh.primitives[primId].vao->Create(vbo.Id(), ibo.Id());
+SetAttribute(&mesh.primitives[primId], 0, accessors[accessorId_position], bufferViews, binFiles);
+SetAttribute(&mesh.primitives[primId], 1, accessors[accessorId_texcoord], bufferViews, binFiles);
+SetAttribute(&mesh.primitives[primId], 2, accessors[accessorId_normal], bufferViews, binFiles);
+SetAttribute(&mesh.primitives[primId], 3, accessors[accessorId_weights], bufferViews, binFiles);
+SetAttribute(&mesh.primitives[primId], 4, accessors[accessorId_joints], bufferViews, binFiles);
 ```
 
 これらのアトリビュートには、頂点に影響を与えるボーンを最大4つまで設定できます。<br>
@@ -582,7 +588,8 @@ AnimatedNodeTree MakeAnimatedNodeTree(const ExtendedFile& file, const Animation&
 
 ```c++
   const int currentNodeId = &node - &nodes[0];
-  AnimatedNodeTree::Transformation& transformation = animated.nodeTransformations[currentNodeId];
+  AnimatedNodeTree::Transformation& transformation =
+    animated.nodeTransformations[currentNodeId];
   if (transformation.isCalculated) {
     return;
   }
