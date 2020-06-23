@@ -1160,8 +1160,8 @@ AABBのどの面に衝突したのかは、変数`u`と`v`を調べれば分か�
 +void PlayerActor::OnHit(const ActorPtr& b, const Collision::Result& result)
 +{
 +  // 貫通しない位置まで衝突面の法線方向に移動させる.
-+  const float d = glm::dot(result.normal, result.pb - result.pa);
-+  const glm::vec3 v = result.normal * (d + 0.01f);
++  const float d = glm::dot(result.nb, result.pb - result.pa);
++  const glm::vec3 v = result.nb * (d + 0.01f);
 +  colWorld.obb.center += v;
 +  position += v;
 +  if (!isInAir && !boardingActor) {
@@ -1170,7 +1170,7 @@ AABBのどの面に衝突したのかは、変数`u`と`v`を調べれば分か�
 +    position.y = newY;
 +  }
 +  // 衝突面の法線が真上から30度の範囲にあれば乗ることができる(角度は要調整).
-+  const float theta = glm::dot(result.normal, glm::vec3(0, 1, 0));
++  const float theta = glm::dot(result.nb, glm::vec3(0, 1, 0));
 +  if (theta >= cos(glm::radians(30.0f))) {
 +    SetBoardingActor(b);
 +  }
@@ -1211,7 +1211,7 @@ AABBのどの面に衝突したのかは、変数`u`と`v`を調べれば分か�
          boardingActor.reset();
 +      } else {
 +        // 衝突面の法線が真上から30度の範囲になければ落下.
-+        const float theta = glm::dot(result.normal, glm::vec3(0, 1, 0));
++        const float theta = glm::dot(result.nb, glm::vec3(0, 1, 0));
 +        if (theta < glm::cos(glm::radians(30.0f))) {
 +          boardingActor.reset();
 +        }
