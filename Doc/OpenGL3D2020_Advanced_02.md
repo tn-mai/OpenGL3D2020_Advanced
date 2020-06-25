@@ -1162,11 +1162,13 @@ AABBのどの面に衝突したのかは、変数`u`と`v`を調べれば分か�
 +  // 貫通しない位置まで衝突面の法線方向に移動させる.
 +  const float d = glm::dot(result.nb, result.pb - result.pa);
 +  const glm::vec3 v = result.nb * (d + 0.01f);
-+  colWorld.obb.center += v;
++  colWorld.c.seg.a += v;
++  colWorld.c.seg.b += v;
 +  position += v;
 +  if (!isInAir && !boardingActor) {
 +    const float newY = heightMap->Height(position);
-+    colWorld.obb.center.y += newY - position.y;
++    colWorld.c.seg.a.y += newY - position.y;
++    colWorld.c.seg.b.y += newY - position.y;
 +    position.y = newY;
 +  }
 +  // 衝突面の法線が真上から30度の範囲にあれば乗ることができる(角度は要調整).
