@@ -703,6 +703,7 @@ AABBのどの面に衝突したのかは、変数`u`と`v`を調べれば分か�
 +    result.isHit = true;
 +    result.na = glm::normalize(c1 - c0);
 +    result.pa = c0 + result.na * c.r;
++    result.nb = -result.na;
 +    result.pb = c1;
 +    return result;
 +  }
@@ -733,8 +734,8 @@ AABBのどの面に衝突したのかは、変数`u`と`v`を調べれば分か�
 +    result.isHit = true;
 +    result.na = glm::normalize(c1 - c0);
 +    result.pa = c0 + result.na * c.r;
-+    result.pb = c1;
 +    result.nb = -result.na;
++    result.pb = c1;
 +    return result;
 +  }
  }
