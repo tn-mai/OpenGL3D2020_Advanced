@@ -520,7 +520,7 @@
 +{
 +  for (const ActorPtr& e : actors) {
 +    if (e && e->health > 0) {
-+      if (Collision::Test(frustum, e->bounds)) {
++      if (Collision::Test(frustum, e->position)) {
 +        e->Draw(drawType);
 +      }
 +    }
