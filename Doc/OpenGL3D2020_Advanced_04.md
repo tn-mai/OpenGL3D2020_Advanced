@@ -166,13 +166,13 @@
 >**【描画する草の数が200x200ではない理由】**<br>
 >`200x200`は頂点の数です。草は頂点の間に作られるため、縦横がひとつ少なくなって`199x199`になるのです。
 
-インスタシング描画では、シェーダはインスタンスの数だけ実行されます。「何番目のインスタンスを処理しているか」は`gl_InstanceId`(ジーエル・インスタンス・アイディー)という変数を見れば分かるようになっています。
+インスタシング描画では、シェーダはインスタンスの数だけ実行されます。「何番目のインスタンスを処理しているか」は`gl_InstanceID`(ジーエル・インスタンス・アイディー)という変数を見れば分かるようになっています。
 
-この`gl_InstanceId`を利用して、草を生やす位置を調整します。具体的には`+X`(プラス・エックス)方向について、`gl_InstanceId`が`1`増えるごとに`1m`ずつずらします。そして`199`個ごと`0m`に戻します。
+この`gl_InstanceID`を利用して、草を生やす位置を調整します。具体的には`+X`(プラス・エックス)方向について、`gl_InstanceID`が`1`増えるごとに`1m`ずつずらします。そして`199`個ごと`0m`に戻します。
 
-同様に`+Z`(プラス・ゼット)方向について、`gl_InstanceId`が`199`増えるごとに`1m`ずらします。例えば`gl_InstanceId`が`451`の場合、草を生やす位置は`+X`方向に`51m`、`+Z`方向に`2m`ずらした位置になります。
+同様に`+Z`(プラス・ゼット)方向について、`gl_InstanceID`が`199`増えるごとに`1m`ずらします。例えば`gl_InstanceID`が`451`の場合、草を生やす位置は`+X`方向に`51m`、`+Z`方向に`2m`ずらした位置になります。
 
-これを割り算と余りを使って言い換えると、「`+X`方向に`(gl_InstanceId % 199)m`、`+Z`方向に`(gl_InstanceId / 199)m`ずらした位置」となります。
+これを割り算と余りを使って言い換えると、「`+X`方向に`(gl_InstanceID % 199)m`、`+Z`方向に`(gl_InstanceID / 199)m`ずらした位置」となります。
 
 それでは、`outPosition`と`gl_Position`を計算するプログラムを、次のように変更してください。
 
@@ -181,8 +181,8 @@
    outNormal = normalize(matNormal * vNormal);
 +
 +  // 草を生やす位置を計算.
-+  float x = float(gl_InstanceId % (mapSize.x - 1));
-+  float z = float(gl_InstanceId / (mapSize.y - 1));
++  float x = float(gl_InstanceID % (mapSize.x - 1));
++  float z = float(gl_InstanceID / (mapSize.y - 1));
 +  vec3 instancePosition = vPosition + vec3(x, 0, z);
 +
 -  outPosition = vec3(matModel * vec4(vPosition, 1.0));
@@ -504,7 +504,7 @@
 
 ### 2.1 高さマップテクスチャを読み込む
 
-`gl_InstanceId`によって、水平方向の草の位置はうまく設定できるようになりました。しかし、いまのところ、全ての草が同じ高さに表示されています。これは、草シェーダで地面の高さを設定していないからです。草は地面から生えているべきなので、高さを設定できるように草シェーダを修正しましょう。
+`gl_InstanceID`によって、水平方向の草の位置はうまく設定できるようになりました。しかし、いまのところ、全ての草が同じ高さに表示されています。これは、草シェーダで地面の高さを設定していないからです。草は地面から生えているべきなので、高さを設定できるように草シェーダを修正しましょう。
 
 地面の高さは「高さマップ」という白黒画像に書かれているのでした。この画像をテクスチャにして、草シェーダで読み込めば、地面の高さに草を描画できるはずです。
 
@@ -620,8 +620,8 @@
 
 ```diff
    // 草を生やす位置を計算.
-   float x = float(gl_InstanceId % (mapSize.x - 1));
-   float z = float(gl_InstanceId / (mapSize.y - 1));
+   float x = float(gl_InstanceID % (mapSize.x - 1));
+   float z = float(gl_InstanceID / (mapSize.y - 1));
    vec3 instancePosition = vPosition + vec3(x, 0, z);
 +  instancePosition.y += Height(instancePosition);
 
@@ -687,8 +687,8 @@
 
 ```diff
    // 草を生やす位置を計算.
-   float x = float(gl_InstanceId % (mapSize.x - 1));
-   float z = float(gl_InstanceId / (mapSize.y - 1));
+   float x = float(gl_InstanceID % (mapSize.x - 1));
+   float z = float(gl_InstanceID / (mapSize.y - 1));
 -  vec3 instancePosition = vPosition + vec3(x, 0, z);
 +  vec3 instancePosition = vPosition + vec3(x, 0, z) + vec3(0.5, 0, 0.5);
    instancePosition.y += Height(instancePosition);
@@ -771,8 +771,8 @@
 
 ```diff
    // 草を生やす位置を計算.
-   float x = float(gl_InstanceId % (mapSize.x - 1));
-   float z = float(gl_InstanceId / (mapSize.y - 1));
+   float x = float(gl_InstanceID % (mapSize.x - 1));
+   float z = float(gl_InstanceID / (mapSize.y - 1));
    vec3 instancePosition = vPosition + vec3(x, 0, z) + vec3(0.5, 0, 0.5);
 +
 +  // 草丈マップ読み取り用テクスチャ座標を計算.
@@ -825,7 +825,7 @@
 
 インスタンシングによってかなり処理が早くなったとはいえ、4万近いメッシュを描画するのは相当な負荷には違いありません。そこで、画面に映らない部分は描画しないようにしましょう。
 
-インスタンシングに視錐台カリングを組み合わせるには、描画する草の位置をリストアップしなくてはなりません。描画する草の位置は「バッファテクスチャ」に格納することにします。そして、草シェーダでは`gl_InstanceId`を添え字として草の位置を取り出します。
+インスタンシングに視錐台カリングを組み合わせるには、描画する草の位置をリストアップしなくてはなりません。描画する草の位置は「バッファテクスチャ」に格納することにします。そして、草シェーダでは`gl_InstanceID`を添え字として草の位置を取り出します。
 
 まずは「草の位置」を格納するバッファテクスチャを作りましょう。`Terrain.h`を開き、`HeightMap`クラスに次のプログラムを追加してください。
 
@@ -1021,8 +1021,8 @@ CPU側で草丈を扱えるように、草丈マップを作成します。ハ�
 ```diff
    // 草を生やす位置を計算.
 +  uvec4 instanceData = texelFetch(texGrassInstanceData, gl_InstanceID);
--  float x = float(gl_InstanceId % (mapSize.x - 1));
--  float z = float(gl_InstanceId / (mapSize.y - 1));
+-  float x = float(gl_InstanceID % (mapSize.x - 1));
+-  float z = float(gl_InstanceID / (mapSize.y - 1));
 +  float x = float(instanceData.x);
 +  float z = float(instanceData.y);
    vec3 instancePosition = vPosition + vec3(x, 0, z) + vec3(0.5, 0, 0.5);
