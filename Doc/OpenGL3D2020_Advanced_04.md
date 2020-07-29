@@ -897,7 +897,7 @@ CPU側で草丈を扱えるように、草丈マップを作成します。ハ�
 +      return false;
 +    }
 +    // 画像から草丈マップを作成.
-+    grassHeightMap.resize(imageData.data.size(), 0U);
++    grassHeightMap.resize(imageData.data.size());
 +    for (int y = 0; y < imageData.height; ++y) {
 +      const int offsetY = (imageData.height - 1) - y; // 上下反転.
 +      for (int x = 0; x < imageData.width; ++x) {
