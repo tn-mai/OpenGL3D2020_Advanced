@@ -229,6 +229,9 @@
  };
 ```
 
+>**【マップの大きさについて】**<br>
+>もし`Terrain.tga`が`200x200`ではない場合、`mapSize`の値を`Terrain.tga`の大きさと同じ値に変更してください。
+
 続いて、ライトの番号を「ライトインデックスバッファ」から取得するように書き換えます。まずはポイントライトの`for`文を、次のように変更してください。
 
 ```diff
@@ -614,6 +617,11 @@
  */
  void main()
 ```
+
+<pre class="tnmai_assignment">
+<strong>【課題02】</strong>
+「高さの拡大率」と「高さ0とみなす値」は、<code>MainGameScene.cpp</code>において高さマップを読み込むときに指定した値を等しくなければなりません。<code>MainGameScene.cpp</code>で<code>HeightMap::LoadFromFile</code>関数を呼び出している部分を探して、その第2、第3引数と同じ値を<code>Grass.vert</code>の<code>heightScale</code>と<code>baseLevel</code>に指定しなさい。
+</pre>
 
 それでは、`Height`関数を使って草の高さを設定しましょう。
 
@@ -1052,3 +1060,8 @@ CPU側で草丈を扱えるように、草丈マップを作成します。ハ�
 <p align="center">
 <img src="images/04_result_4.png" width="50%" /><br>
 </p>
+
+<pre class="tnmai_assignment">
+<strong>【課題03】</strong>
+<code>200x200m</code>の草丈マップ画像を作成し、<code>Terrain_Ratio.tga</code>を置き換えなさい。草丈マップ画像のファイル名は<code>GrassHeightMap.tga</code>としなさい。
+</pre>
