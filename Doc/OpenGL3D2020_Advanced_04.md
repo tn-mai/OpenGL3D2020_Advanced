@@ -266,7 +266,6 @@
 +    if (id < 0) { // 番号が0未満の場合、それ以上ライト番号は入っていない.
 +      break;
 +    }
-     int id = spotLightIndex[i];
      vec3 lightVector = spotLight[id].posAndInnerCutOff.xyz - inPosition;
 ```
 
