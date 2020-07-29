@@ -81,7 +81,7 @@
    }
 ```
 
-この変更によって、`instanceCount`が2以上の場合は`glDrawElementsInstancedBaseVertex`関数を使ってインスタンシングが行えるようになりました。
+この変更によって、`instanceCount`が2以上の場合は、<br>`glDrawElementsInstancedBaseVertex`関数を使ってインスタンシングが行えるようになりました。
 
 さて、`課題01`で作成してもらったプログラムは、変数名などの細部は異なるとしても、おおよそ以下のようなものだと思います。
 
@@ -620,7 +620,10 @@
 
 <pre class="tnmai_assignment">
 <strong>【課題02】</strong>
-「高さの拡大率」と「高さ0とみなす値」は、<code>MainGameScene.cpp</code>において高さマップを読み込むときに指定した値を等しくなければなりません。<code>MainGameScene.cpp</code>で<code>HeightMap::LoadFromFile</code>関数を呼び出している部分を探して、その第2、第3引数と同じ値を<code>Grass.vert</code>の<code>heightScale</code>と<code>baseLevel</code>に指定しなさい。
+「高さの拡大率」と「高さ0とみなす値」は、<code>MainGameScene.cpp</code>において、高さマッ
+プを読み込むときに指定した値と等しくなければなりません。<code>MainGameScene.cpp</code>
+で<code>HeightMap::LoadFromFile</code>関数を呼び出している部分を探して、その第2、第3引数
+と同じ値を<code>Grass.vert</code>の<code>heightScale</code>と<code>baseLevel</code>に指定しなさい。
 </pre>
 
 それでは、`Height`関数を使って草の高さを設定しましょう。
