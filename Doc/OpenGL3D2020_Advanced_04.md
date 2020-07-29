@@ -572,7 +572,7 @@
 +uniform sampler2D texHeightMap;
 
  const ivec2 mapSize = ivec2(200, 200); // マップの大きさ.
-+const float heightScale = 50; // 高さの拡大率.
++const float heightScale = 20; // 高さの拡大率.
 +const float baseLevel = 0.5; // 高さ0とみなす値.
 +
 +/**
@@ -770,7 +770,7 @@
 +uniform sampler2D texGrassHeightMap;
 
  const ivec2 mapSize = ivec2(200, 200); // マップの大きさ.
- const float heightScale = 50; // 高さの拡大率.
+ const float heightScale = 20; // 高さの拡大率.
  const float baseLevel = 0.5; // 高さ0とみなす値.
 ```
 
@@ -1019,7 +1019,7 @@ CPU側で草丈を扱えるように、草丈マップを作成します。ハ�
 +uniform usamplerBuffer texGrassInstanceData;
 
  const ivec2 mapSize = ivec2(200, 200); // マップの大きさ.
- const float heightScale = 50; // 高さの拡大率.
+ const float heightScale = 20; // 高さの拡大率.
  const float baseLevel = 0.5; // 高さ0とみなす値.
 ```
 
