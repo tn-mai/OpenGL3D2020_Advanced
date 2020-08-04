@@ -935,6 +935,20 @@ CPU側で草丈を扱えるように、草丈マップを作成します。ハ�
    if (GLenum error = glGetError()) {
 ```
 
+そして、草シェーダをセットアップするときに`grassInstanceData`をテクスチャ3に設定します。`HeightMap::SetupGrassShader`関数に、次のプログラムを追加してください。
+
+```diff
+   // テクスチャ2に草丈マップテクスチャを割り当てる.
+   m.texture[2] = texGrassHeightMap;
++
++  // テクスチャ3に草インスタンスデータを割り当てる.
++  m.texture[3] = grassInstanceData;
+
+   // マテリアル0番にライトインデックスバッファを割り当てる.
+   m.texture[4] = lightIndex[0];
+   m.texture[5] = lightIndex[1];
+```
+
 ### 3.2 インスタンスデータ更新関数を作成する
 
 草インスタンスデータを更新する関数を作ります。`Terrain.h`を開き、`HeightMap`クラスに次のプログラムを追加してください。
@@ -963,7 +977,7 @@ CPU側で草丈を扱えるように、草丈マップを作成します。ハ�
 +*
 +* @param frustum 表示範囲を表す視錐台.
 +*/
-+void HeightMap::UpdateGrass(const Collision::Frustum& frustum)
++void HeightMap::UpdateGrassInstanceData(const Collision::Frustum& frustum)
 +{
 +  std::vector<GrassInstanceData> data;
 +  data.reserve(grassInstanceData->Size());
@@ -1002,7 +1016,7 @@ CPU側で草丈を扱えるように、草丈マップを作成します。ハ�
    meshBuffer.BindShadowTexture(fboShadow->GetDepthTexture());
 
    const Collision::Frustum viewFrustum = Collision::CreateFrustum(camera);
-+  heightMap.UpdateGrass(viewFrustum);
++  heightMap.UpdateGrassInstanceData(viewFrustum);
    RenderMesh(Mesh::DrawType::color, &viewFrustum);
    particleSystem.Draw(matProj, matView);
 
